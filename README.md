@@ -1,122 +1,142 @@
-# Cana de Açucar
-# Modelo de Entidade e Relacionamento (MER) - Usina de Cana-de-Açúcar
+#   Sistema de Gestão de Cooperativa de Cana-de-Açúcar
 
-## 1. Entidades
+Descrição do Minimundo
+Uma cooperativa de cana-de-açúcar reúne diversos produtores rurais que cultivam cana e entregam sua produção para processamento e comercialização. Atualmente, o controle das informações dos cooperados, propriedades, safras, entregas e pagamentos é realizado de forma manual, dificultando a gestão e o acompanhamento da produção.
+O sistema proposto tem como objetivo armazenar e gerenciar informações sobre os cooperados, suas propriedades rurais, as safras produzidas, as entregas de cana realizadas e os pagamentos efetuados pela cooperativa.
+Regras de Negócio
+Um cooperado pode possuir uma ou mais propriedades rurais.
+Cada propriedade pertence a apenas um cooperado.
+Uma propriedade pode produzir várias safras.
+Cada safra pertence a apenas uma propriedade.
+Uma safra pode gerar várias entregas de cana.
+Cada entrega está vinculada a apenas uma safra.
+Cada entrega possui peso e data de entrega.
+A cooperativa realiza pagamentos aos cooperados com base nas entregas realizadas.
+Um cooperado pode receber vários pagamentos.
+Cada pagamento refere-se a apenas um cooperado.
+Processos Principais
+Cadastro de cooperados.
+Cadastro de propriedades rurais.
+Controle das safras.
+Registro das entregas de cana.
+Controle de pagamentos.
+Consulta da produção por cooperado.
+Consulta dos pagamentos realizados.
 
-* **Fazenda:** Representa a propriedade rural onde a cana-de-açúcar é cultivada.
-* **Talhao:** Representa a subdivisão física do terreno da fazenda utilizada no controle do plantio e colheita.
-* **VariedadeCana:** Representa o tipo/genética da cana-de-açúcar plantada (ex: RB867515, CTC4).
-* **Motorista:** Representa o condutor responsável pelo transporte da matéria-prima até a usina.
-* **Caminhao:** Representa o veículo utilizado no transporte do lote colhido.
-* **Carregamento:** Representa o registro individual de viagem com dados de pesagem e recepção da cana.
+modelagem/MER.md
+1. Entidades
+Cooperado
+Definição: Representa o produtor rural associado à cooperativa.
+Propriedade
+Definição: Representa a fazenda ou terreno utilizado para o cultivo da cana-de-açúcar.
+Safra
+Definição: Representa um período de produção de cana em determinada propriedade.
+Entrega
+Definição: Representa a entrega de cana realizada à cooperativa.
+Pagamento
+Definição: Representa os valores pagos pela cooperativa ao cooperado.
 
----
+2. Relacionamentos e Cardinalidades
+[Cooperado] (1,1) possui (1,N) [Propriedade]
+Explicação: Um cooperado pode possuir várias propriedades, mas cada propriedade pertence a apenas um cooperado.
+[Propriedade] (1,1) produz (1,N) [Safra]
+Explicação: Uma propriedade pode produzir várias safras ao longo dos anos, mas cada safra está associada a apenas uma propriedade.
+[Safra] (1,1) gera (1,N) [Entrega]
+Explicação: Uma safra pode resultar em várias entregas de cana, mas cada entrega pertence a apenas uma safra.
+[Cooperado] (1,1) recebe (1,N) [Pagamento]
+Explicação: Um cooperado pode receber diversos pagamentos, mas cada pagamento é destinado a apenas um cooperado.
 
-## 2. Relacionamentos e Cardinalidades
+3. Sugestão de Atributos
+Cooperado
+PK: id_cooperado
+id_cooperado (PK)
+nome
+cpf
+telefone
+email
+data_associacao
 
-* **[Fazenda] (1,1) <possui> (1,N) [Talhao]**
-  * *Explicação:* Uma Fazenda possui obrigatoriamente 1 ou vários Talhões, mas cada Talhão pertence a apenas 1 Fazenda.
+Propriedade
+PK: id_propriedade
+id_propriedade (PK)
+nome_propriedade
+area_hectares
+endereco
+municipio
+id_cooperado (FK)
 
-* **[Talhao] (0,N) <cultiva> (1,1) [VariedadeCana]**
-  * *Explicação:* Um Talhão cultiva obrigatoriamente 1 Variedade de Cana, enquanto uma Variedade de Cana pode estar plantada em vários Talhões.
+Safra
+PK: id_safra
+id_safra (PK)
+ano_safra
+quantidade_produzida
+data_inicio
+data_fim
+id_propriedade (FK)
 
-* **[Talhao] (1,1) <origina> (0,N) [Carregamento]**
-  * *Explicação:* Um Talhão pode originar múltiplos Carregamentos ao longo de uma colheita, mas cada Carregamento sai de apenas 1 Talhão de origem.
+Entrega
+PK: id_entrega
+id_entrega (PK)
+data_entrega
+peso_toneladas
+qualidade_cana
+id_safra (FK)
 
-* **[Motorista] (1,1) <conduz> (0,N) [Carregamento]**
-  * *Explicação:* Um Motorista pode realizar 0 ou vários Carregamentos ao longo da safra, mas cada Carregamento é conduzido por apenas 1 Motorista.
+Pagamento
+PK: id_pagamento
+id_pagamento (PK)
+data_pagamento
+valor
+forma_pagamento
+id_cooperado (FK)
 
-* **[Caminhao] (1,1) <transporta> (0,N) [Carregamento]**
-  * *Explicação:* Um Caminhão pode realizar vários Carregamentos, mas um registro de Carregamento específico é transportado por apenas 1 Caminhão.
-
----
-
-## 3. Sugestão de Atributos
-
-### Fazenda
-* `id_fazenda` (PK)
-* `nome_fazenda`
-* `municipio`
-* `inscricao_estadual`
-
-### Talhao
-* `id_talhao` (PK)
-* `numero_talhao`
-* `area_hectares`
-* `data_plantio`
-
-### VariedadeCana
-* `id_variedade` (PK)
-* `nome_tecnico`
-* `ciclo_maturacao`
-
-### Motorista
-* `id_motorista` (PK)
-* `nome`
-* `cpf`
-* `cnh`
-
-### Caminhao
-* `id_caminhao` (PK)
-* `placa`
-* `modelo`
-* `capacidade_toneladas`
-
-### Carregamento
-* `id_carregamento` (PK)
-* `data_hora_entrada`
-* `peso_bruto`
-* `peso_tara`
-* `peso_liquido` (Derivado: peso_bruto - peso_tara)
-
----
-
-## 4. Diagrama Entidade e Relacionamento (DER)
-
-```mermaid
+4. Diagrama Entidade-Relacionamento (DER)
+Você pode inserir no MER.md o seguinte código Mermaid:
 erDiagram
-    FAZENDA ||--|{ TALHAO : possui
-    VARIEDADE_CANA ||--o{ TALHAO : cultiva
-    TALHAO ||--o{ CARREGAMENTO : origina
-    MOTORISTA ||--o{ CARREGAMENTO : conduz
-    CAMINHAO ||--o{ CARREGAMENTO : transporta
 
-    FAZENDA {
-        int id_fazenda PK
-        string nome_fazenda
-        string municipio
-    }
+COOPERADO ||--o{ PROPRIEDADE : possui
+PROPRIEDADE ||--o{ SAFRA : produz
+SAFRA ||--o{ ENTREGA : gera
+COOPERADO ||--o{ PAGAMENTO : recebe
 
-    TALHAO {
-        int id_talhao PK
-        int numero_talhao
-        float area_hectares
-        date data_plantio
-    }
+COOPERADO {
+int id_cooperado PK
+string nome
+string cpf
+string telefone
+string email
+date data_associacao
+}
 
-    VARIEDADE_CANA {
-        int id_variedade PK
-        string nome_tecnico
-        string ciclo_maturacao
-    }
+PROPRIEDADE {
+int id_propriedade PK
+string nome_propriedade
+float area_hectares
+string endereco
+string municipio
+}
 
-    MOTORISTA {
-        int id_motorista PK
-        string nome
-        string cpf
-        string cnh
-    }
+SAFRA {
+int id_safra PK
+int ano_safra
+float quantidade_produzida
+date data_inicio
+date data_fim
+}
 
-    CAMINHAO {
-        int id_caminhao PK
-        string placa
-        string modelo
-    }
+ENTREGA {
+int id_entrega PK
+date data_entrega
+float peso_toneladas
+string qualidade_cana
+}
 
-    CARREGAMENTO {
-        int id_carregamento PK
-        datetime data_hora_entrada
-        float peso_bruto
-        float peso_tara
-        float peso_liquido
-    }
+PAGAMENTO {
+int id_pagamento PK
+date data_pagamento
+decimal valor
+string forma_pagamento
+}
+Esse modelo atende aos requisitos da atividade e possui 5 entidades, relacionamentos, cardinalidades, atributos e DER, sendo adequado para um sistema de gestão de uma cooperativa de cana-de-açúcar.
+
+
