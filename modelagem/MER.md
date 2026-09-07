@@ -78,8 +78,4 @@ Um produtor pode pagar várias mensalidades ao longo dos anos.
 * data_pagamento
 * status
 
----
 
-## 4. DER
-
-O DER foi elaborado utilizando a ferramenta draw.io.
