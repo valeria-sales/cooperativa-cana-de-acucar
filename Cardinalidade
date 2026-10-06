@@ -1,0 +1,37 @@
+# Detalhamento das Regras de Negócio:
+PRODUTOR – ENTREGA_CANA (1:N)
+(0, N): Um produtor associado pode ainda não ter realizado entregas ou pode ter realizado várias entregas ao longo do tempo.
+(1, 1): Cada registro de entrega obrigatoriamente pertence a um único produtor.
+USINA – ENTREGA_CANA (1:N)
+(0, N): Uma usina conveniada pode não ter recebido entregas no período ou ter recebido várias.
+(1, 1): Cada entrega é recebida obrigatoriamente por exatamente uma usina.
+PRODUTOR – CONTRIBUICAO_ANUAL (1:N)
+(0, N): Um produtor pode possuir uma contribuição anual para cada ano de referência que esteve ativo.
+(1, 1): Cada registro de contribuição diz respeito a um único produtor.
+PRODUTOR – COMPRA (1:N)
+(0, N): O produtor pode não ter feito compras de insumos ou ter feito várias ao longo do ano.
+(1, 1): Cada nota/registro de compra pertence exclusivamente a um único produtor.
+COMPRA – ITEM_COMPRA (1:N)
+(1, N): Uma compra obrigatoriamente contém pelo menos 1 item e pode conter vários.
+(1, 1): Cada item detalhado pertence a uma única compra específica.
+INSUMO – ITEM_COMPRA (1:N)
+(0, N): Um insumo cadastrado pode nunca ter sido comprado ou ter participado como item de várias compras.
+(1, 1): Cada linha de item de compra refere-se a um único insumo cadastrado.
+PRODUTOR – VISITA_TECNICA (1:N)
+(0, N): Um produtor pode não ter solicitado/recebido visitas ainda ou ter recebido várias.
+(1, 1): Cada visita técnica é realizada na propriedade de um único produtor.
+AGRONOMO – VISITA_TECNICA (1:N)
+(0, N): Um agrônomo pode ainda não ter realizado visitas ou ter executado várias.
+(1, 1): Cada visita técnica é de responsabilidade de apenas um agrônomo.
+
+Entidade A Relacionamento Entidade B Mín / Máx (A → B) Mín / Máx (B → A) Cardinalidade
+
+PRODUTOR Realiza ENTREGA_CANA (0, N) (1, 1) 1:N
+USINA Recebe ENTREGA_CANA (0, N) (1, 1) 1:N
+PRODUTOR Possui CONTRIBUICAO_ANUAL (0, N) (1, 1) 1:N
+PRODUTOR Efetua COMPRA (0, N) (1, 1) 1:N
+COMPRA Contém ITEM_COMPRA (1, N) (1, 1) 1:N
+INSUMO Compõe ITEM_COMPRA (0, N) (1, 1) 1:N
+PRODUTOR Recebe VISITA_TECNICA (0, N) (1, 1) 1:N
+AGRONOMO Realiza VISITA_TECNICA (0, N) (1, 1) 1:N
+
