@@ -199,8 +199,8 @@ CREATE TABLE VisitaTecnica (
 
 -- Inserindo Produtores
 INSERT INTO Produtor (idProdutor, nome, cpf, telefone, logradouro, numero, bairro, cidade, uf, cep, dataAssociacao) VALUES
-(1, 'João da Silva', '111.222.333-44', '(16) 99999-1111', 'Fazenda Santa Maria', 'S/N', 'Zona Rural', 'Sertãozinho', 'SP', '14160000', '2020-01-15'),
-(2, 'Maria de Oliveira', '222.333.444-55', '(16) 99999-2222', 'Sítio Bela Vista', 'KM 12', 'Zona Rural', 'Ribeirão Preto', 'SP', '14000000', '2021-03-10');
+(1, 'Manoel Clemente', '111.222.333-44', '(84) 99999-1111', 'Sítio Mundo Novo', 'S/N', 'Zona Rural', 'Arez', 'RN', '59170000', '2023-10-15'),
+(2, 'Maria Sales', '222.333.444-55', '(84) 99999-2222', 'Sítio Sao Francisco', 'KM 12', 'Zona Rural', 'Arez', 'RN', '59170000', '2023-10-10');
 
 -- Inserindo E-mails dos Produtores (1FN)
 INSERT INTO ProdutorEmail (idProdutor, email) VALUES
@@ -210,8 +210,8 @@ INSERT INTO ProdutorEmail (idProdutor, email) VALUES
 
 -- Inserindo Usinas
 INSERT INTO Usina (idUsina, nomeUsina, cnpj, cidade, uf) VALUES
-(1, 'Usina Alta Energia', '12.345.678/0001-90', 'Sertãozinho', 'SP'),
-(2, 'Usina Vale do Açúcar', '98.765.432/0001-10', 'Ribeirão Preto', 'SP');
+(1, 'Usina Alta Energia', '12.345.678/0001-90', 'Arez', 'RN'),
+(2, 'Usina Vale do Açúcar', '98.765.432/0001-10', 'Baía Formosa', 'RN');
 
 -- Inserindo Entregas de Cana
 INSERT INTO EntregaCana (idEntrega, dataEntrega, toneladas, valorPago, idProdutor, idUsina) VALUES
