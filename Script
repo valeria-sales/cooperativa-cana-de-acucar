@@ -4,9 +4,6 @@
 -- Contexto: Cooperativa de Cana-de-Açúcar
 -- =========================================================================
 
--- Remove o banco de dados se ele já existir para reiniciar os testes
-DROP DATABASE IF EXISTS CooperativaCanaDB;
-
 -- Criação e seleção do banco de dados
 CREATE DATABASE CooperativaCanaDB;
 USE CooperativaCanaDB;
