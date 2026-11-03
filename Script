@@ -1,0 +1,315 @@
+#
+-- =========================================================================
+-- AULA PRÁTICA: NORMALIZAÇÃO DE DADOS (1FN, 2FN e 3FN) E MAPEAMENTO DER->SQL
+-- Contexto: Cooperativa de Cana-de-Açúcar
+-- =========================================================================
+
+-- Remove o banco de dados se ele já existir para reiniciar os testes
+DROP DATABASE IF EXISTS CooperativaCanaDB;
+
+-- Criação e seleção do banco de dados
+CREATE DATABASE CooperativaCanaDB;
+USE CooperativaCanaDB;
+
+-- =========================================================================
+-- CONCEITO DE NORMALIZAÇÃO DE DADOS
+-- "A chave, toda a chave, e nada além da chave!"
+-- =========================================================================
+
+-- =========================================================================
+-- 1. TABELA PRODUTOR (Aplicando 1FN e 3FN)
+--
+-- APLICAÇÃO DA 1ª FORMA NORMAL (1FN - ATOMICIDADE):
+-- 1. Atributo Composto (Endereço): Desmembrado em logradouro, numero, bairro, 
+--    cidade, uf e cep.
+-- 2. Atributo Multivalorado (E-mail): Um produtor pode ter múltiplos e-mails. 
+--    O e-mail foi isolado na tabela 'ProdutorEmail' para evitar colunas repetidas.
+-- =========================================================================
+CREATE TABLE Produtor (
+    idProdutor INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) NOT NULL UNIQUE,
+    telefone VARCHAR(20),
+    
+    -- ATRIBUTO COMPOSTO (ENDEREÇO) DESMEMBRADO (1FN)
+    logradouro VARCHAR(150) NOT NULL,
+    numero VARCHAR(10) NOT NULL,
+    bairro VARCHAR(60) NOT NULL,
+    cidade VARCHAR(60) NOT NULL,
+    uf CHAR(2) NOT NULL,
+    cep CHAR(8) NOT NULL,
+    dataAssociacao DATE NOT NULL
+);
+
+-- =========================================================================
+-- 1.1 TABELA PRODUTOR_EMAIL (Solução da 1FN para Atributo Multivalorado)
+-- =========================================================================
+CREATE TABLE ProdutorEmail (
+    idProdutor INT UNSIGNED NOT NULL,
+    email VARCHAR(100) NOT NULL,
+
+    -- Chave Primária Composta
+    PRIMARY KEY (idProdutor, email),
+
+    -- Chave Estrangeira com Integridade Referencial
+    CONSTRAINT fk_produtor_email
+        FOREIGN KEY (idProdutor)
+        REFERENCES Produtor(idProdutor)
+        ON DELETE CASCADE
+);
+
+-- =========================================================================
+-- 2. TABELA USINA (Usinas Conveniadas)
+-- =========================================================================
+CREATE TABLE Usina (
+    idUsina INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nomeUsina VARCHAR(100) NOT NULL,
+    cnpj VARCHAR(18) NOT NULL UNIQUE,
+    cidade VARCHAR(60) NOT NULL,
+    uf CHAR(2) NOT NULL
+);
+
+-- =========================================================================
+-- 3. TABELA ENTREGA_CANA (Registros de Entregas)
+-- =========================================================================
+CREATE TABLE EntregaCana (
+    idEntrega INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    dataEntrega DATE NOT NULL,
+    toneladas DECIMAL(10,2) NOT NULL,
+    valorPago DECIMAL(12,2) NOT NULL,
+    idProdutor INT UNSIGNED NOT NULL,
+    idUsina INT UNSIGNED NOT NULL,
+
+    CONSTRAINT fk_entrega_produtor
+        FOREIGN KEY (idProdutor)
+        REFERENCES Produtor(idProdutor),
+
+    CONSTRAINT fk_entrega_usina
+        FOREIGN KEY (idUsina)
+        REFERENCES Usina(idUsina)
+);
+
+-- =========================================================================
+-- 4. TABELA CONTRIBUICAO_ANUAL (Aplicando a 3FN)
+--
+-- APLICAÇÃO DA 3ª FORMA NORMAL (3FN):
+-- Guarda o percentual cobrado e o valor total repassado pela usina/produtor 
+-- referente a um ano base.
+-- =========================================================================
+CREATE TABLE ContribuicaoAnual (
+    idContribuicao INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    anoReferencia INT NOT NULL,
+    percentualAplicado DECIMAL(5,2) NOT NULL,
+    valorTotalCalculado DECIMAL(10,2) NOT NULL,
+    dataPagamento DATE,
+    descontoEmUsina BOOLEAN DEFAULT TRUE,
+    idProdutor INT UNSIGNED NOT NULL,
+    idUsinaRepasse INT UNSIGNED,
+
+    CONSTRAINT fk_contribuicao_produtor
+        FOREIGN KEY (idProdutor)
+        REFERENCES Produtor(idProdutor),
+
+    CONSTRAINT fk_contribuicao_usina
+        FOREIGN KEY (idUsinaRepasse)
+        REFERENCES Usina(idUsina)
+);
+
+-- =========================================================================
+-- 5. TABELA INSUMO (Produtos Comerciais)
+-- =========================================================================
+CREATE TABLE Insumo (
+    idInsumo INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nomeInsumo VARCHAR(100) NOT NULL,
+    categoria VARCHAR(50) NOT NULL, -- ex: Fertilizante, Herbicide, Semente
+    precoUnitario DECIMAL(10,2) NOT NULL
+);
+
+-- =========================================================================
+-- 6. TABELA COMPRA_INSUMO (Cabeçalho da Venda de Insumos)
+-- =========================================================================
+CREATE TABLE CompraInsumo (
+    idCompra INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    dataCompra DATE NOT NULL,
+    idProdutor INT UNSIGNED NOT NULL,
+
+    CONSTRAINT fk_compra_produtor
+        FOREIGN KEY (idProdutor)
+        REFERENCES Produtor(idProdutor)
+);
+
+-- =========================================================================
+-- 7. TABELA ITEM_COMPRA_INSUMO (Aplicando a 2ª FORMA NORMAL - 2FN)
+--
+-- CONCEITO: Relacionamento N:M entre CompraInsumo e Insumo.
+-- A Chave Primária é COMPOSTA: (idCompra, idInsumo).
+--
+-- APLICAÇÃO DA 2ª FORMA NORMAL (2FN):
+-- 'quantidade' e 'precoPraticado' dependem da combinação de Compra e Insumo.
+-- O nome do insumo permanece isolado na tabela 'Insumo'.
+-- =========================================================================
+CREATE TABLE ItemCompraInsumo (
+    idCompra INT UNSIGNED NOT NULL,
+    idInsumo INT UNSIGNED NOT NULL,
+    quantidade DECIMAL(10,2) NOT NULL,
+    precoPraticado DECIMAL(10,2) NOT NULL,
+
+    -- Chave Primária Composta (2FN)
+    PRIMARY KEY (idCompra, idInsumo),
+
+    -- Chaves Estrangeiras
+    CONSTRAINT fk_item_compra
+        FOREIGN KEY (idCompra)
+        REFERENCES CompraInsumo(idCompra),
+
+    CONSTRAINT fk_item_insumo
+        FOREIGN KEY (idInsumo)
+        REFERENCES Insumo(idInsumo)
+);
+
+-- =========================================================================
+-- 8. TABELA AGRONOMO
+-- =========================================================================
+CREATE TABLE Agronomo (
+    idAgronomo INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    crea VARCHAR(20) NOT NULL UNIQUE
+);
+
+-- =========================================================================
+-- 9. TABELA VISITA_TECNICA
+-- =========================================================================
+CREATE TABLE VisitaTecnica (
+    idVisita INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    dataVisita DATE NOT NULL,
+    observacoes TEXT,
+    recomendacoes TEXT,
+    idProdutor INT UNSIGNED NOT NULL,
+    idAgronomo INT UNSIGNED NOT NULL,
+
+    CONSTRAINT fk_visita_produtor
+        FOREIGN KEY (idProdutor)
+        REFERENCES Produtor(idProdutor),
+
+    CONSTRAINT fk_visita_agronomo
+        FOREIGN KEY (idAgronomo)
+        REFERENCES Agronomo(idAgronomo)
+);
+
+-- =========================================================================
+-- 10. INSERÇÃO DE DADOS (DML) - POVOAMENTO DO BANCO DE DADOS
+-- =========================================================================
+
+-- Inserindo Produtores
+INSERT INTO Produtor (idProdutor, nome, cpf, telefone, logradouro, numero, bairro, cidade, uf, cep, dataAssociacao) VALUES
+(1, 'João da Silva', '111.222.333-44', '(16) 99999-1111', 'Fazenda Santa Maria', 'S/N', 'Zona Rural', 'Sertãozinho', 'SP', '14160000', '2020-01-15'),
+(2, 'Maria de Oliveira', '222.333.444-55', '(16) 99999-2222', 'Sítio Bela Vista', 'KM 12', 'Zona Rural', 'Ribeirão Preto', 'SP', '14000000', '2021-03-10');
+
+-- Inserindo E-mails dos Produtores (1FN)
+INSERT INTO ProdutorEmail (idProdutor, email) VALUES
+(1, 'joao.silva@email.com'),
+(1, 'contato.fazendastamaria@email.com'),
+(2, 'maria.oliveira@email.com');
+
+-- Inserindo Usinas
+INSERT INTO Usina (idUsina, nomeUsina, cnpj, cidade, uf) VALUES
+(1, 'Usina Alta Energia', '12.345.678/0001-90', 'Sertãozinho', 'SP'),
+(2, 'Usina Vale do Açúcar', '98.765.432/0001-10', 'Ribeirão Preto', 'SP');
+
+-- Inserindo Entregas de Cana
+INSERT INTO EntregaCana (idEntrega, dataEntrega, toneladas, valorPago, idProdutor, idUsina) VALUES
+(101, '2026-05-10', 450.50, 67575.00, 1, 1),
+(102, '2026-05-18', 300.00, 45000.00, 1, 1),
+(103, '2026-05-20', 600.25, 90037.50, 2, 2);
+
+-- Inserindo Contribuições Anuais (Exemplo: 2% do total vendido)
+INSERT INTO ContribuicaoAnual (idContribuicao, anoReferencia, percentualAplicado, valorTotalCalculado, dataPagamento, descontoEmUsina, idProdutor, idUsinaRepasse) VALUES
+(1, 2026, 2.00, 2251.50, '2026-06-01', TRUE, 1, 1),
+(2, 2026, 2.00, 1800.75, '2026-06-01', TRUE, 2, 2);
+
+-- Inserindo Insumos
+INSERT INTO Insumo (idInsumo, nomeInsumo, categoria, precoUnitario) VALUES
+(10, 'Adubo NPK 20-05-20', 'Fertilizante', 150.00),
+(20, 'Herbicida Glifosato 5L', 'Herbicida', 120.00),
+(30, 'Inseticida Cartap', 'Inseticida', 95.00);
+
+-- Inserindo Compras de Insumos
+INSERT INTO CompraInsumo (idCompra, dataCompra, idProdutor) VALUES
+(1001, '2026-02-10', 1),
+(1002, '2026-03-15', 2);
+
+-- Inserindo Itens da Compra (2FN)
+INSERT INTO ItemCompraInsumo (idCompra, idInsumo, quantidade, precoPraticado) VALUES
+(1001, 10, 50.00, 150.00), -- João comprou 50 sacos de adubo
+(1001, 20, 10.00, 120.00), -- João comprou 10 galões de herbicida
+(1002, 30, 15.00, 95.00);   -- Maria comprou 15 unidades de inseticida
+
+-- Inserindo Agrônomos
+INSERT INTO Agronomo (idAgronomo, nome, crea) VALUES
+(1, 'Dra. Patricia Mendes', 'CREA-SP 5069874521'),
+(2, 'Dr. Roberto Souza', 'CREA-SP 5061239874');
+
+-- Inserindo Visitas Técnicas
+INSERT INTO VisitaTecnica (idVisita, dataVisita, observacoes, recomendacoes, idProdutor, idAgronomo) VALUES
+(1, '2026-04-05', 'Constatada presença de broca-da-cana no talhão 3.', 'Aplicar controle biológico com Trichogramma galloi.', 1, 1),
+(2, '2026-04-12', 'Análise foliar indica deficiência leve de potássio.', 'Reforçar adubação de cobertura com KCL.', 2, 2);
+
+-- =========================================================================
+-- 11. CONSULTAS DEMONSTRATIVAS DAS FORMAS NORMAIS (DQL)
+-- =========================================================================
+
+-- -------------------------------------------------------------------------
+-- DEMONSTRAÇÃO DA 1FN: Consultando os e-mails cadastrados do Produtor
+-- -------------------------------------------------------------------------
+SELECT 
+    p.nome AS 'Produtor',
+    e.email AS 'E-mail Cadastrado'
+FROM Produtor p
+INNER JOIN ProdutorEmail e ON p.idProdutor = e.idProdutor
+WHERE p.idProdutor = 1;
+
+-- -------------------------------------------------------------------------
+-- DEMONSTRAÇÃO DA 2FN E 3FN: Detalhamento das Entregas de Cana por Usina
+-- -------------------------------------------------------------------------
+SELECT 
+    e.idEntrega AS 'Nº Entrega',
+    e.dataEntrega AS 'Data',
+    p.nome AS 'Produtor',
+    u.nomeUsina AS 'Usina Conveniada',
+    e.toneladas AS 'Toneladas',
+    e.valorPago AS 'Valor Total (R$)'
+FROM EntregaCana e
+INNER JOIN Produtor p ON e.idProdutor = p.idProdutor
+INNER JOIN Usina u ON e.idUsina = u.idUsina
+ORDER BY e.dataEntrega;
+
+-- -------------------------------------------------------------------------
+-- DEMONSTRAÇÃO DE COMPRA DE INSUMOS (Itens por Compra)
+-- -------------------------------------------------------------------------
+SELECT 
+    c.idCompra AS 'Nº Compra',
+    c.dataCompra AS 'Data',
+    p.nome AS 'Produtor',
+    i.nomeInsumo AS 'Insumo',
+    item.quantidade AS 'Qtd',
+    item.precoPraticado AS 'Preço Un. (R$)',
+    (item.quantidade * item.precoPraticado) AS 'Subtotal (R$)'
+FROM CompraInsumo c
+INNER JOIN Produtor p ON c.idProdutor = p.idProdutor
+INNER JOIN ItemCompraInsumo item ON c.idCompra = item.idCompra
+INNER JOIN Insumo i ON item.idInsumo = i.idInsumo
+ORDER BY c.idCompra;
+
+-- -------------------------------------------------------------------------
+-- DEMONSTRAÇÃO DE VISITAS TÉCNICAS REALIZADAS POR AGRÔNOMOS
+-- -------------------------------------------------------------------------
+SELECT 
+    v.dataVisita AS 'Data da Visita',
+    a.nome AS 'Agrônomo Responsável',
+    p.nome AS 'Produtor Atendido',
+    v.observacoes AS 'Diagnóstico',
+    v.recomendacoes AS 'Recomendações'
+FROM VisitaTecnica v
+INNER JOIN Agronomo a ON v.idAgronomo = a.idAgronomo
+INNER JOIN Produtor p ON v.idProdutor = p.idProdutor
+ORDER BY v.dataVisita DESC;
