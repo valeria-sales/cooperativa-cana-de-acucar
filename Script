@@ -204,9 +204,9 @@ INSERT INTO Produtor (idProdutor, nome, cpf, telefone, logradouro, numero, bairr
 
 -- Inserindo E-mails dos Produtores (1FN)
 INSERT INTO ProdutorEmail (idProdutor, email) VALUES
-(1, 'joao.silva@email.com'),
+(1, 'manoel.clemente@email.com'),
 (1, 'contato.fazendastamaria@email.com'),
-(2, 'maria.oliveira@email.com');
+(2, 'maria.sales@email.com');
 
 -- Inserindo Usinas
 INSERT INTO Usina (idUsina, nomeUsina, cnpj, cidade, uf) VALUES
