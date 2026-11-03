@@ -9,11 +9,6 @@ CREATE DATABASE CooperativaCanaDB;
 USE CooperativaCanaDB;
 
 -- =========================================================================
--- CONCEITO DE NORMALIZAÇÃO DE DADOS
--- "A chave, toda a chave, e nada além da chave!"
--- =========================================================================
-
--- =========================================================================
 -- 1. TABELA PRODUTOR (Aplicando 1FN e 3FN)
 --
 -- APLICAÇÃO DA 1ª FORMA NORMAL (1FN - ATOMICIDADE):
