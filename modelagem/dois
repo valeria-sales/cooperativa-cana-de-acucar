@@ -1,0 +1,77 @@
+ENTIDADES E ATRIBUTOS – COOPERATIVA DE CANA-DE-AÇÚCAR
+1. PRODUTOR
+- id_produtor (PK)
+- nome
+- cpf
+- telefone
+- endereco
+- data_associacao
+
+  --
+  2. USINA
+- id_usina (PK)
+- nome
+- cnpj
+- endereco
+- telefone
+--
+  3. ENTREGA_CANA
+- id_entrega (PK)
+- data_entrega
+- toneladas
+- valor_recebido
+- id_produtor (FK)
+- id_usina (FK)
+  
+  --
+4. CONTRIBUICAO_ANUAL
+- id_contribuicao (PK)
+- ano_referencia
+- percentual_cobranca
+- valor_contribuicao
+- autorizacao_desconto
+- data_repasse
+- status_pagamento
+- id_produtor (FK)
+
+  --
+5. AGRONOMO
+  - id_agronomo (PK)
+- nome
+- cpf
+- telefone
+- email
+- registro_profissional
+
+  --
+6. VISITA_TECNICA
+- id_visita (PK)
+- data_visita
+- observacoes
+- recomendacoes
+- id_produtor (FK)
+- id_agronomo (FK)
+
+  --
+  7. INSUMO
+- id_insumo (PK)
+- nome
+- descricao
+- unidade_medida
+- preco_unitario
+
+  --
+8. COMPRA
+- id_compra (PK)
+- data_compra
+- valor_total
+- id_produtor (FK)
+
+  --
+9. ITEM_COMPRA
+- id_item (PK)
+- quantidade
+- valor_unitario
+- subtotal
+- id_compra (FK)
+- id_insumo (FK)
