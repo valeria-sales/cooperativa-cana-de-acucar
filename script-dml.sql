@@ -143,11 +143,11 @@ VALUES
 INSERT INTO Compra
 (idCompra, dataCompra, statusCompra, idProdutor)
 VALUES
-(1, '2026-02-05', 'PAGA', 1),
-(2, '2026-02-12', 'PAGA', 2),
-(3, '2026-03-01', 'PAGA', 3),
-(4, '2026-03-15', 'ABERTA', 4),
-(5, '2026-04-01', 'PAGA', 5);
+(1, '2026-05-05', 'PAGA', 1),
+(2, '2026-05-12', 'PAGA', 2),
+(3, '2026-06-01', 'PAGA', 3),
+(4, '2026-07-15', 'ABERTA', 4),
+(5, '2026-08-01', 'PAGA', 5);
 
 
 -- 2. ITENS DAS COMPRAS
@@ -182,27 +182,27 @@ INSERT INTO Visita_Tecnica
 (idVisita, dataVisita, observacoes, recomendacoes,
  idProdutor, idAgronomo)
 VALUES
-(1, '2026-02-15',
+(1, '2026-06-15',
  'Plantio com desenvolvimento irregular',
  'Realizar analise do solo e corrigir a adubacao',
  1, 1),
 
-(2, '2026-02-20',
+(2, '2026-07-20',
  'Presenca de pragas na plantacao',
  'Aplicar controle adequado de pragas',
  2, 2),
 
-(3, '2026-03-10',
+(3, '2026-08-10',
  'Necessidade de melhorar a irrigacao',
  'Revisar o sistema de irrigacao',
  3, 3),
 
-(4, '2026-03-20',
+(4, '2026-09-20',
  'Solo com baixa fertilidade',
  'Realizar adubacao conforme analise do solo',
  4, 4),
 
-(5, '2026-04-10',
+(5, '2026-09-10',
  'Plantacao em fase de crescimento',
  'Acompanhar o desenvolvimento da cultura',
  5, 5);
