@@ -81,17 +81,27 @@ Registra as visitas realizadas pelos agrônomos aos produtores.
 
 2. Relacionamentos e cardinalidades
 Relacionamento	Cardinalidade
+
 PRODUTOR — ENTREGA_CANA	1:N
+
 USINA — ENTREGA_CANA	1:N
+
 PRODUTOR — CONTRIBUICAO_ANUAL	1:N
+
 USINA — CONTRIBUICAO_ANUAL	1:N*
+
 PRODUTOR — COMPRA	1:N
+
 COMPRA — ITEM_COMPRA	1:N
+
 INSUMO — ITEM_COMPRA	1:N
+
 PRODUTOR — VISITA_TECNICA	1:N
+
 AGRONOMO — VISITA_TECNICA	1:N
 
 O relacionamento entre USINA e CONTRIBUICAO_ANUAL ocorre pelo campo idUsinaRepasse, que pode ser nulo quando ainda não há usina registrada como responsável pelo repasse.
+
 3. O que mudou em relação à sua lista antiga?
 Esta é a parte mais importante para você não se perder novamente.
 Tabela	Mudança realizada
