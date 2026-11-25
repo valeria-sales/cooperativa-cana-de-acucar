@@ -1,6 +1,7 @@
 ENTIDADES E ATRIBUTOS – COOPERATIVA DE CANA-DE-AÇÚCAR
 Versão atualizada
  Baseada na estrutura SQL recuperada
+ 
 1. PRODUTOR
 Armazena os dados cadastrais dos produtores associados à cooperativa.
 - idProdutor (PK)
@@ -14,13 +15,16 @@ Armazena os dados cadastrais dos produtores associados à cooperativa.
 - cidade
 - uf
 - cep
+
 2. USINA
+  
 Armazena os dados das usinas que recebem a produção de cana-de-açúcar.
 - idUsina (PK)
 - nomeUsina
 - cnpj (UK)
 - cidade
 - telefone
+
 3. ENTREGA_CANA
 Registra as entregas de cana realizadas pelos produtores às usinas.
 - idEntrega (PK)
@@ -29,7 +33,9 @@ Registra as entregas de cana realizadas pelos produtores às usinas.
 - valorPago
 - idProdutor (FK)
 - idUsina (FK)
+
 4. CONTRIBUICAO_ANUAL
+   
 Registra os valores das contribuições anuais dos produtores e os respectivos repasses.
 - idContribuicao (PK)
 - anoReferencia
@@ -42,6 +48,7 @@ Registra os valores das contribuições anuais dos produtores e os respectivos r
 - idProdutor (FK)
 - idUsinaRepasse (FK)
 Observação: existe uma restrição UNIQUE combinando idProdutor e anoReferencia, impedindo duas contribuições para o mesmo produtor no mesmo ano.
+
 5. INSUMO
 Armazena os produtos agrícolas disponibilizados pela cooperativa.
 - idInsumo (PK)
@@ -50,6 +57,7 @@ Armazena os produtos agrícolas disponibilizados pela cooperativa.
 - descricao
 - unidadeMedida
 - precoUnitario
+
 6. COMPRA
 Registra as compras realizadas pelos produtores associados.
 - idCompra (PK)
@@ -57,6 +65,7 @@ Registra as compras realizadas pelos produtores associados.
 - statusCompra
 - idProdutor (FK)
 Observação: o valor total da compra é obtido pela soma dos valores dos itens. Não existe um atributo valorTotal na tabela atual.
+
 7. ITEM_COMPRA
 Armazena os insumos, as quantidades e os preços praticados em cada compra.
 - idCompra (PK composta e FK)
@@ -64,12 +73,14 @@ Armazena os insumos, as quantidades e os preços praticados em cada compra.
 - quantidade
 - precoPraticado
 Observação: a chave primária é composta por idCompra e idInsumo. O subtotal é calculado pela multiplicação da quantidade pelo preço praticado.
+
 8. AGRONOMO
 Armazena os dados dos profissionais responsáveis pela assistência técnica.
 - idAgronomo (PK)
 - nome
 - registroProfissional (UK)
 - telefone
+
 9. VISITA_TECNICA
 Registra as visitas realizadas pelos agrônomos aos produtores.
 - idVisita (PK)
@@ -105,6 +116,7 @@ O relacionamento entre USINA e CONTRIBUICAO_ANUAL ocorre pelo campo idUsinaRepas
 3. O que mudou em relação à sua lista antiga?
 Esta é a parte mais importante para você não se perder novamente.
 Tabela	Mudança realizada
+
 PRODUTOR	Endereço dividido em logradouro, número, bairro, cidade, UF e CEP. Acrescentado codigoProdutor.
 USINA	Nome alterado para nomeUsina e endereço simplificado para cidade.
 ENTREGA_CANA	valorRecebido passou a ser valorPago.
@@ -115,12 +127,13 @@ ITEM_COMPRA	Retirado idItem; adotada chave primária composta. precoUnitario pas
 AGRONOMO	Retirado email; registroProfissional passou a ser único.
 VISITA_TECNICA	Mantida a estrutura, com nomes padronizados.
 
-4. Legenda do DER
+5. Legenda do DER
 - PK: chave primária – identifica cada registro.
 - FK: chave estrangeira – estabelece relacionamento entre tabelas.
 - UK: campo com valor único.
 - 1:N: um para muitos.
 - PK composta: chave formada por dois ou mais atributos.
+
 5. Resumo da estrutura final
 9
 Tabelas
