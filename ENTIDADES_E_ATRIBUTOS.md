@@ -1,3 +1,5 @@
+
+
 ENTIDADES E ATRIBUTOS – COOPERATIVA DE CANA-DE-AÇÚCAR
 Versão atualizada
  Baseada na estrutura SQL recuperada
@@ -26,6 +28,7 @@ Armazena os dados das usinas que recebem a produção de cana-de-açúcar.
 - telefone
 
 3. ENTREGA_CANA
+
 Registra as entregas de cana realizadas pelos produtores às usinas.
 - idEntrega (PK)
 - dataEntrega
@@ -47,9 +50,11 @@ Registra os valores das contribuições anuais dos produtores e os respectivos r
 - statusPagamento
 - idProdutor (FK)
 - idUsinaRepasse (FK)
+
 Observação: existe uma restrição UNIQUE combinando idProdutor e anoReferencia, impedindo duas contribuições para o mesmo produtor no mesmo ano.
 
 5. INSUMO
+
 Armazena os produtos agrícolas disponibilizados pela cooperativa.
 - idInsumo (PK)
 - nomeInsumo
@@ -59,6 +64,7 @@ Armazena os produtos agrícolas disponibilizados pela cooperativa.
 - precoUnitario
 
 6. COMPRA
+
 Registra as compras realizadas pelos produtores associados.
 - idCompra (PK)
 - dataCompra
@@ -67,6 +73,7 @@ Registra as compras realizadas pelos produtores associados.
 Observação: o valor total da compra é obtido pela soma dos valores dos itens. Não existe um atributo valorTotal na tabela atual.
 
 7. ITEM_COMPRA
+
 Armazena os insumos, as quantidades e os preços praticados em cada compra.
 - idCompra (PK composta e FK)
 - idInsumo (PK composta e FK)
@@ -75,6 +82,7 @@ Armazena os insumos, as quantidades e os preços praticados em cada compra.
 Observação: a chave primária é composta por idCompra e idInsumo. O subtotal é calculado pela multiplicação da quantidade pelo preço praticado.
 
 8. AGRONOMO
+
 Armazena os dados dos profissionais responsáveis pela assistência técnica.
 - idAgronomo (PK)
 - nome
@@ -82,6 +90,7 @@ Armazena os dados dos profissionais responsáveis pela assistência técnica.
 - telefone
 
 9. VISITA_TECNICA
+
 Registra as visitas realizadas pelos agrônomos aos produtores.
 - idVisita (PK)
 - dataVisita
@@ -91,6 +100,7 @@ Registra as visitas realizadas pelos agrônomos aos produtores.
 - idAgronomo (FK)
 
 2. Relacionamentos e cardinalidades
+
 Relacionamento	Cardinalidade
 
 PRODUTOR — ENTREGA_CANA	1:N
@@ -118,13 +128,21 @@ Esta é a parte mais importante para você não se perder novamente.
 Tabela	Mudança realizada
 
 PRODUTOR	Endereço dividido em logradouro, número, bairro, cidade, UF e CEP. Acrescentado codigoProdutor.
+
 USINA	Nome alterado para nomeUsina e endereço simplificado para cidade.
+
 ENTREGA_CANA	valorRecebido passou a ser valorPago.
+
 CONTRIBUICAO_ANUAL	Acrescentados valorBase e idUsinaRepasse. Autorização e pagamento tiveram os nomes ajustados.
+
 INSUMO	Acrescentados categoria e nomeInsumo.
+
 COMPRA	Acrescentado statusCompra e retirado valorTotal.
+
 ITEM_COMPRA	Retirado idItem; adotada chave primária composta. precoUnitario passou a precoPraticado.
+
 AGRONOMO	Retirado email; registroProfissional passou a ser único.
+
 VISITA_TECNICA	Mantida a estrutura, com nomes padronizados.
 
 5. Legenda do DER
@@ -153,3 +171,4 @@ Tabelas do projeto
 - ITEM_COMPRA
 - AGRONOMO
 - VISITA_TECNICA
+
